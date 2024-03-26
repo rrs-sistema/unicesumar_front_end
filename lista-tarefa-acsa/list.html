@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="list.css">
+    <title>TO DO LIST</title>
+</head>
+<body>
+    <main class="inicio">
+    <div>
+        <p class="titulo_lista">Página to do list </p>
+    </div>
+    <h2>Lista de Tarefas - Programação FrontEnd</h2>
+
+    <div id="div_area_nova_tarefa">
+        <label for="input_nova_tarefa"></label>
+        <input type="text" id="input_nova_tarefa" placeholder="digite a nova tarefa">
+        <button class="btn_nova_tarefa"  onclick="adicionaTarefaNaLista()">+</button>
+    </div>
+    <div id="adiv_lista_de_tarefs">
+        <ul id="lista_de_tarefas">  </ul>
+    </div>    
+</main>
+
+    <script src="script.js"></script>
+</body>
+</html>

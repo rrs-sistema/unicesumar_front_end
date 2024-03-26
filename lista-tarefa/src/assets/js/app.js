@@ -35,8 +35,8 @@ function mudaEstadoTarefa(idTarefa) {
 function adicionaListaTarefaLocalStorage() {
     const localStorage = window.localStorage;
     let tarefas = localStorage.getItem('lista_tarefas');
-    console.log(tarefas);
-    if (localStorage.getItem('lista_tarefas')) {
+    console.log(`Metodo onload adicionaListaTarefaLocalStorage: ${tarefas}`);
+    if (tarefas) {
         // implementar a logica de salvar cada tarefa aqui
         localStorage.setItem('lista_tarefas', tarefas)
     } else {

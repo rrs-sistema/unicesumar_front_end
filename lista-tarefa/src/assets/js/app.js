@@ -24,7 +24,7 @@ function criaNovaTarefa(textoTarefa, vemCadastrado) {
     if (!temItem) {
         itemsArray.push(textoTarefa);
     } else if (temItem && vemCadastrado) {
-        alert('OPS!, Essa tarefa já foi cadastra.');
+        alert('OPS!, Essa tarefa já foi cadastrada.');
         return;
     }
     const table = document.getElementById("table");
@@ -118,11 +118,9 @@ function alterarTarefa(idTarefa) {
                 break;
             }
         }
-
         itemsArray.splice(indexItem, 1);
-
         itemsArray.push(tarefaAlterada);
-        localStorage.setItem('items', JSON.stringify(itemsArray))
+        localStorage.setItem('items', JSON.stringify(itemsArray));
     }
 
 }
@@ -131,8 +129,10 @@ function deletarTarefa(rowId) {
     var row = document.createElement("tr");
     var row = document.getElementById(rowId);
     if (confirm("Deseja conformar essa ação?")) {
+        const id = rowId.replace("row_id_", '')
         row.parentNode.removeChild(row);
-        console.log(`Deletando tarefa: ${rowId}`);
+        itemsArray.splice(id - 1, 1);
+        localStorage.setItem('items', JSON.stringify(itemsArray));
     }
     else {
         console.log('Ação abortada tarefa');

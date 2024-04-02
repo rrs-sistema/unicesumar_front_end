@@ -1,11 +1,18 @@
-input[type=text], select {
+#label_nova_tarefa  {
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 25px !important; 
+}
+
+input[type=text], select {
+  width: 490px;
+  padding: 12px 5px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+  margin-left: 22px;
 }
 
 .btn_generic {
@@ -21,6 +28,8 @@ input[type=text], select {
 
 .btn_novo {
   background-color: #4CAF50;
+  border-radius: 12px;
+  height: 42px;
 }
 
 .btn_novo:hover {
@@ -44,6 +53,23 @@ input[type=text], select {
   background-color: #f06565;
 }
 
+.styleOne {
+  background-color: #A9A9A9;
+}
+
+.styleOne:hover {
+  background-color: rgb(181, 198, 216);
+}
+
+.styleTwo {
+  background-color: lightgrey;
+}
+
+.styleTwo:hover {
+  background-color: rgb(181, 198, 216);
+}
+
+
 div {
   border-radius: 5px;
   background-color: #f2f2f2;
@@ -57,7 +83,7 @@ table {
 }
 
 td, th {
-  border: 1px solid #dddddd;
+  border: 0px solid transparent;
   text-align: left;
   padding: 8px;
 }

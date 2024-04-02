@@ -46,10 +46,11 @@ function criaNovaTarefa(textoTarefa) {
 
     var linhasTabela = document.getElementsByTagName("tr");
     for (var i = 0; i < linhasTabela.length; i++) {
+        if (i == 0) continue;// Não pinta o cabeçalho da tabela
         if ((i) % 2 == 0)
-            linhasTabela[i + 1].style.background = "#A9A9A9";
+            linhasTabela[i].style.background = "#A9A9A9";
         else
-            linhasTabela[i + 1].style.background = "lightgrey";
+            linhasTabela[i].style.background = "lightgrey";
     }
 
     counter++;

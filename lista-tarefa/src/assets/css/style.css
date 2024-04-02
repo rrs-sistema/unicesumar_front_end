@@ -5,7 +5,7 @@
   font-size: 25px !important; 
 }
 
-input[type=text], select {
+.inputText {
   width: 490px;
   padding: 12px 5px;
   display: inline-block;
@@ -54,7 +54,7 @@ input[type=text], select {
 }
 
 .styleOne {
-  background-color: #A9A9A9;
+  background-color: #c1c1c1;
 }
 
 .styleOne:hover {
@@ -88,3 +88,25 @@ td, th {
   padding: 8px;
 }
 
+.sa-button-container {
+    height: 60px !important;
+}
+
+.sweet-alert button {
+    margin: 2px 2px 0 5px !important;
+    padding: 5px 16px !important;
+}
+
+.sweet-alert button {
+    background-color: #8cd4f5;
+    color: black !important;
+    border: 0;
+    box-shadow: none;
+    font-size: 17px;
+    font-weight: 500;
+    -webkit-border-radius: 4px;
+    border-radius: 5px;
+    padding: 10px 32px;
+    margin: 26px 5px 0 5px;
+    cursor: pointer;
+}

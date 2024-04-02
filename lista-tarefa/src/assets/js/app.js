@@ -27,8 +27,8 @@ function criaNovaTarefa(textoTarefa) {
     const rowId = `row_id_${quantidade}`;
 
     cellCheckBox.appendChild(criaInputCheckBoxTarefa(idTarefa));
-    cellEditar.appendChild(criaInputButtonEditarTarefa(idTarefa));
-    cellDeletar.appendChild(criaInputButtonDeletarTarefa(rowId));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `alterarTarefa('${idTarefa}')`));
+    cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}')`));
 
     // Adiciona as celulas na linha atual
     row.id = rowId;
@@ -50,8 +50,10 @@ function criaNovaTarefa(textoTarefa) {
         if ((i) % 2 == 0) {
             linhasTabela[i].className = "styleOne";
         }
-        else
+        else {
             linhasTabela[i].className = "styleTwo";
+        }
+
     }
 
     counter++;
@@ -64,28 +66,18 @@ function criaInputCheckBoxTarefa(idTarefa) {
     return inputTarefa;
 }
 
-function criaInputButtonEditarTarefa(idTarefa) {
-    var btnEdit = document.createElement('input');
-    btnEdit.id = "buttonEditar";
-    btnEdit.type = "button";
-    btnEdit.value = 'Editar';
-    btnEdit.className = "btn_generic btn_editar";
-    btnEdit.setAttribute('onclick', `alterarTarefa('${idTarefa}')`);
-    return btnEdit;
-}
-
-function criaInputButtonDeletarTarefa(rowId) {
-    var btnDelet = document.createElement('input');
-    btnDelet.id = "buttonDeletar";
-    btnDelet.type = "button";
-    btnDelet.value = 'Deletar';
-    btnDelet.className = "btn_generic btn_deletar";
-    btnDelet.setAttribute('onclick', `deletarTarefa('${rowId}')`);
-    return btnDelet;
+function criaButtonGeneric(nome, className, funcao) {
+    var button = document.createElement('input');
+    button.id = "buttonEditar";
+    button.type = "button";
+    button.value = nome;
+    button.className = `btn_generic ${className}`;
+    button.setAttribute('onclick', funcao);
+    return button;
 }
 
 function mudaEstadoTarefa(idTarefa) {
-    const tarefaSelecionada = document.getElementById(idTarefa);
+    const tarefaSelecionada = document.getElementById(idTarefa)
     if (tarefaSelecionada.style.textDecoration == 'line-through') {
         tarefaSelecionada.style = 'text-decoration: none;'
     } else {
@@ -94,20 +86,46 @@ function mudaEstadoTarefa(idTarefa) {
 }
 
 function alterarTarefa(idTarefa) {
-    const tarefaSelecionada = document.getElementById(idTarefa);
-    if (tarefaSelecionada.style.textDecoration == 'line-through') {
-        tarefaSelecionada.style = 'text-decoration: none;'
-    } else {
-        tarefaSelecionada.style = 'text-decoration: line-through;'
+    const tarefaSelecionada = document.getElementById(idTarefa).innerHTML;
+    /*
+   swal({
+       title: 'Alterando tarefa!',
+       type: 'input',
+       showCancelButton: true,
+       closeOnConfirm: false,
+       animation: "slide-from-top",
+       confirmButtonText: 'Alterar',
+       cancelButtonText: 'Cancelar',
+       inputPlaceholder: tarefaSelecionada,
+       height: 250
+   },
+       function (inputValue) {
+           if (inputValue === false) return false;
+           document.getElementById(idTarefa).innerHTML = inputValue;
+           swal.close();
+       });
+  
+   */
+    let tarefaAlterada = prompt('Alterando tarefa', tarefaSelecionada);
+    if (tarefaAlterada != null) {
+        document.getElementById(idTarefa).innerHTML = tarefaAlterada;
     }
+
 }
 
 function deletarTarefa(rowId) {
     var row = document.createElement("tr");
     var row = document.getElementById(rowId);
-    row.parentNode.removeChild(row);
-    alert(`Deletando tarefa: ${rowId}`);
+    if (confirm("Deseja conformar essa ação?")) {
+        row.parentNode.removeChild(row);
+        console.log(`Deletando tarefa: ${rowId}`);
+    }
+    else {
+        console.log('Ação abortada tarefa');
+    }
+
 }
+
 
 function adicionaListaTarefaLocalStorage() {
     const localStorage = window.localStorage;

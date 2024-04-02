@@ -1,11 +1,32 @@
-let counter = 0;
+const localStorage = window.localStorage;
+let itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : []
+localStorage.setItem('items', JSON.stringify(itemsArray))
+const data = JSON.parse(localStorage.getItem('items'))
+
+data.forEach(item => {
+    criaNovaTarefa(item, false)
+});
 
 function adicionarTarefa() {
     const novaTarefa = document.getElementById('input_nova_tarefa').value;
-    criaNovaTarefa(novaTarefa);
+    criaNovaTarefa(novaTarefa, true);
 };
 
-function criaNovaTarefa(textoTarefa) {
+function criaNovaTarefa(textoTarefa, vemCadastrado) {
+    let temItem = false;
+    console.log('Verificando item');
+    for (var i = 0; i < itemsArray.length; i++) {
+        if (itemsArray[i].trim() == textoTarefa.trim()) {
+            temItem = true;
+            break;
+        }
+    }
+    if (!temItem) {
+        itemsArray.push(textoTarefa);
+    } else if (temItem && vemCadastrado) {
+        alert('OPS!, Essa tarefa já foi cadastra.');
+        return;
+    }
     const table = document.getElementById("table");
     let quantidade = table.children.length;
     const novaTarefa = document.createElement('td');
@@ -53,10 +74,9 @@ function criaNovaTarefa(textoTarefa) {
         else {
             linhasTabela[i].className = "styleTwo";
         }
-
     }
 
-    counter++;
+    localStorage.setItem('items', JSON.stringify(itemsArray))
 }
 
 function criaInputCheckBoxTarefa(idTarefa) {
@@ -87,28 +107,22 @@ function mudaEstadoTarefa(idTarefa) {
 
 function alterarTarefa(idTarefa) {
     const tarefaSelecionada = document.getElementById(idTarefa).innerHTML;
-    /*
-   swal({
-       title: 'Alterando tarefa!',
-       type: 'input',
-       showCancelButton: true,
-       closeOnConfirm: false,
-       animation: "slide-from-top",
-       confirmButtonText: 'Alterar',
-       cancelButtonText: 'Cancelar',
-       inputPlaceholder: tarefaSelecionada,
-       height: 250
-   },
-       function (inputValue) {
-           if (inputValue === false) return false;
-           document.getElementById(idTarefa).innerHTML = inputValue;
-           swal.close();
-       });
-  
-   */
     let tarefaAlterada = prompt('Alterando tarefa', tarefaSelecionada);
     if (tarefaAlterada != null) {
         document.getElementById(idTarefa).innerHTML = tarefaAlterada;
+        let indexItem = -1;
+        for (var i = 0; i < itemsArray.length; i++) {
+            if (itemsArray[i].trim() == tarefaAlterada.trim()) {
+                temItem = true;
+                indexItem = i;
+                break;
+            }
+        }
+
+        itemsArray.splice(indexItem, 1);
+
+        itemsArray.push(tarefaAlterada);
+        localStorage.setItem('items', JSON.stringify(itemsArray))
     }
 
 }

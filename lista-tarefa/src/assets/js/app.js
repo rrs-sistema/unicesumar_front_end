@@ -175,7 +175,7 @@ function alterarTarefa(idTarefa) {
     let tarefaAlterada = '';
     let indexItem = idTarefa.replace('tarefa_id_', '');
     const inputValue = tarefaSelecionada;
-    // Exemplo: https://sweetalert2.github.io/#examples
+    // Exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
     swal({
         title: 'Alterando tarefa!',
         type: 'input',

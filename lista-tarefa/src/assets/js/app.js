@@ -12,8 +12,6 @@ class TarefaObj {
     }
 }
 
-
-
 window.onload = function () {
     dadosLocalStorage.forEach(item => {
         criaNovaTarefa(item, false)

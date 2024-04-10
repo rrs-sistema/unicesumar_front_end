@@ -1,8 +1,6 @@
 const localStorage = window.localStorage;
 let tarefaArrayLista = localStorage.getItem('listTarefas') ? JSON.parse(localStorage.getItem('listTarefas')) : [];
 localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
-const dadosLocalStorage = JSON.parse(localStorage.getItem('listTarefas'));
-
 
 class TarefaObj {
     constructor(id, descricao, status) {
@@ -13,16 +11,20 @@ class TarefaObj {
 }
 
 window.onload = function () {
+    const dadosLocalStorage = JSON.parse(localStorage.getItem('listTarefas'));
     dadosLocalStorage.forEach(item => {
         criaNovaTarefa(item, false)
     });
-    console.log('EVENTO ONLOAD ACONTECENDO...');
 };
 
 function adicionarTarefa() {
     const novaTarefa = document.getElementById('input_nova_tarefa').value;
     if (novaTarefa == null || novaTarefa == '') {
-        alert('OPS!, Innforme a descrição da tarefa.');
+        swal('OPS!, Innforme a descrição da tarefa.', {
+            button: {
+                text: "OK",
+            },
+        });
         return;
     }
     const table = document.getElementById("table");
@@ -75,7 +77,7 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     const rowId = `row_id_${quantidade}`;
 
     cellCheckBox.appendChild(criaInputCheckBoxTarefa(idTarefa));
-    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `alterarTarefa('${idTarefa}')`));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${idTarefa}')`));
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}')`));
 
     // Adiciona as celulas na linha atual
@@ -84,8 +86,6 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     row.appendChild(cellCheckBox);
     row.appendChild(cellEditar);
     row.appendChild(cellDeletar);
-
-
 
     // Append the row to the table
     table.appendChild(row);// Adiciona a linha na tabela
@@ -167,68 +167,76 @@ function mudaEstadoTarefa(idTarefa) {
     localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
 }
 
-function alterarTarefa(idTarefa) {
-    const tarefaSelecionada = document.getElementById(idTarefa).innerHTML;
+function modalEdicaoTarefa(idTarefa) {
+    const inputValue = document.getElementById(idTarefa).innerHTML;
     //let tarefaAlterada = prompt('Alterando tarefa', tarefaSelecionada);
-    let tarefaAlterada = '';
-    let indexItem = idTarefa.replace('tarefa_id_', '');
-    const inputValue = tarefaSelecionada;
-    // Exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
+
+    // Documentação do exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
     swal({
         title: 'Alterando tarefa!',
-        type: 'input',
-        inputValue,
-        showCancelButton: true,
-        closeOnConfirm: false,
-        animation: "slide-from-top",
-        confirmButtonText: 'Alterar',
-        cancelButtonText: 'Cancelar',
-        height: 250
-    },
-        function (inputValue) {
-            if (inputValue === false || inputValue === '') {
-                alert('OPS! Por favor informe a tarefa');
-                return false;
+        content: "input",
+        content: {
+            element: "input",
+            attributes: {
+                placeholder: "POr favor informe a tarefa",
+                value: inputValue,
+            },
+        },
+        closeModal: false,
+        closeOnClickOutside: false,
+        closeOnEsc: false,
+        height: 250,
+    }).then((newValue) => {
+        if (newValue) {
+            update(newValue, idTarefa)
+        } else {
+            swal('Observação!', 'Não teve alteração nessa tarefa.', "info");
+        }
+    });
+}
+
+function update(newValue, idTarefa) {
+    document.getElementById(idTarefa).innerHTML = newValue;
+    let indexItem = idTarefa.replace('tarefa_id_', '');
+    let status = false;
+    if (newValue != null) {
+        for (var i = 0; i < tarefaArrayLista.length; i++) {
+            status = tarefaArrayLista[i].status;
+            if (tarefaArrayLista[i].descricao.trim() == newValue.trim()) {
+                temItem = true;
+                break;
             }
-            tarefaAlterada = inputValue;
-            document.getElementById(idTarefa).innerHTML = inputValue;
-            let status = false;
-
-            if (tarefaAlterada != null) {
-                document.getElementById(idTarefa).innerHTML = tarefaAlterada;
-                for (var i = 0; i < tarefaArrayLista.length; i++) {
-                    status = tarefaArrayLista[i].status;
-                    if (tarefaArrayLista[i].descricao.trim() == tarefaAlterada.trim()) {
-                        temItem = true;
-                        break;
-                    }
-                }
-
-                indexItem = (indexItem - 1);
-
-                let objTarefa = new TarefaObj();
-                objTarefa.id = indexItem;
-                objTarefa.descricao = tarefaAlterada;
-                objTarefa.status = status;
-                tarefaArrayLista.splice(indexItem, 1);
-                tarefaArrayLista.push(objTarefa);
-                localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
-            }
-
-            swal.close();
-        });
+        }
+        indexItem = (indexItem - 1);
+        let objTarefa = new TarefaObj();
+        objTarefa.id = indexItem;
+        objTarefa.descricao = newValue;
+        objTarefa.status = status;
+        tarefaArrayLista.splice(indexItem, 1);
+        tarefaArrayLista.push(objTarefa);
+        localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
+    }
 }
 
 function deletarTarefa(rowId) {
     var row = document.createElement("tr");
     var row = document.getElementById(rowId);
-    if (confirm("Deseja conformar essa ação?")) {
-        const id = rowId.replace("row_id_", '')
-        row.parentNode.removeChild(row);
-        tarefaArrayLista.splice(id - 1, 1);
-        localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
-    }
-    else {
-        console.log('Ação abortada tarefa');
-    }
+    swal({
+        title: "Deseja realmente desejar essa tarefa?",
+        icon: "info",
+        buttons: ["Cancelar", "Excluir"],
+        dangerMode: true,
+
+    }).then((willDelete) => {
+        if (willDelete) {
+            const id = rowId.replace("row_id_", '')
+            row.parentNode.removeChild(row);
+            tarefaArrayLista.splice(id - 1, 1);
+            localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
+            swal("Tarefa excluida com sucesso!", {
+                icon: "warning",
+                timer: 2000,
+            });
+        }
+    });
 }

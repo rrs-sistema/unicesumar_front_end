@@ -1,7 +1,6 @@
 const localStorage = window.localStorage;
-let tarefaArrayLista = localStorage.getItem('listTarefas') ? JSON.parse(localStorage.getItem('listTarefas')) : [];
-localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
-
+let tarefaArrayLista = localStorage.getItem('tasksList') ? JSON.parse(localStorage.getItem('tasksList')) : [];
+localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
 class TarefaObj {
     constructor(id, descricao, status) {
         this.id = id;
@@ -11,16 +10,16 @@ class TarefaObj {
 }
 
 window.onload = function () {
-    const dadosLocalStorage = JSON.parse(localStorage.getItem('listTarefas'));
+    const dadosLocalStorage = JSON.parse(localStorage.getItem('tasksList'));
     dadosLocalStorage.forEach(item => {
         criaNovaTarefa(item, false)
     });
 };
 
-function adicionarTarefa() {
+function addTask() {
     const novaTarefa = document.getElementById('input_nova_tarefa').value;
     if (novaTarefa == null || novaTarefa == '') {
-        swal('OPS!, Innforme a descrição da tarefa.', {
+        swal('OPS!, Enter the task description.', {
             button: {
                 text: "OK",
             },
@@ -54,21 +53,21 @@ function criaNovaTarefa(objTar, vemCadastrado) {
         objTarefa.status = false;
         tarefaArrayLista.push(objTarefa);
     } else if (temItem && vemCadastrado) {
-        alert('OPS!, Essa tarefa já foi cadastrada.');
+        alert('OPS!, This task has already been registered.');
         return;
     }
 
     const novaTarefa = document.createElement('td');
     novaTarefa.innerText = objTar.descricao;
-    const idTarefa = `tarefa_id_${quantidade}`;
-    novaTarefa.id = idTarefa;
-    novaTarefa.appendChild(criaInputCheckBoxTarefa(idTarefa));
+    const taskId = `tarefa_id_${quantidade}`;
+    novaTarefa.id = taskId;
+    novaTarefa.appendChild(criaInputCheckBoxTarefa(taskId));
 
     // Create a new row
     var row = document.createElement("tr");
     // Create two new cells
     var cellTextoTarefa = document.createElement("td");
-    cellTextoTarefa.id = idTarefa;
+    cellTextoTarefa.id = taskId;
     cellTextoTarefa.innerHTML = objTar.descricao;
 
     var cellCheckBox = document.createElement("td");
@@ -76,8 +75,8 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     var cellDeletar = document.createElement("td");
     const rowId = `row_id_${quantidade}`;
 
-    cellCheckBox.appendChild(criaInputCheckBoxTarefa(idTarefa));
-    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${idTarefa}')`));
+    cellCheckBox.appendChild(criaInputCheckBoxTarefa(taskId));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${taskId}')`));
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}')`));
 
     // Adiciona as celulas na linha atual
@@ -93,7 +92,7 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     inputNovaTarefa.value = ''; // Limpa o input de tarefa
     document.getElementById("input_nova_tarefa").focus(); // Seta o foco no input
 
-    const idInputChecked = `checkbox_${idTarefa}`;
+    const idInputChecked = `checkbox_${taskId}`;
 
     if (!objTar.status) {
         row.style = 'text-decoration: none;';
@@ -114,14 +113,14 @@ function criaNovaTarefa(objTar, vemCadastrado) {
         }
     }
 
-    localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista))
+    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
 }
 
-function criaInputCheckBoxTarefa(idTarefa) {
+function criaInputCheckBoxTarefa(taskId) {
     const inputTarefa = document.createElement('input');
-    inputTarefa.id = `checkbox_${idTarefa}`;
+    inputTarefa.id = `checkbox_${taskId}`;
     inputTarefa.type = 'checkbox';
-    inputTarefa.setAttribute('onclick', `mudaEstadoTarefa('${idTarefa}')`);
+    inputTarefa.setAttribute('onclick', `mudaEstadoTarefa('${taskId}')`);
     return inputTarefa;
 }
 
@@ -135,10 +134,8 @@ function criaButtonGeneric(nome, className, funcao) {
     return button;
 }
 
-function mudaEstadoTarefa(idTarefa) {
-    const tarefa = document.getElementById(idTarefa).innerHTML;
-    row_id_3
-
+function mudaEstadoTarefa(taskId) {
+    const tarefa = document.getElementById(taskId).innerHTML;
     let indexItem = -1;
     let objTarefa = new TarefaObj();
     objTarefa.id = indexItem;
@@ -153,7 +150,7 @@ function mudaEstadoTarefa(idTarefa) {
             objTarefa.status = tarefaArrayLista[i].status;
         }
     }
-    let idRowSelected = idTarefa.replace('tarefa_id_', 'row_id_');
+    let idRowSelected = taskId.replace('tarefa_id_', 'row_id_');
     const rowSelected = document.getElementById(idRowSelected);
 
     if (!objTarefa.status) {
@@ -164,22 +161,22 @@ function mudaEstadoTarefa(idTarefa) {
 
     tarefaArrayLista.splice(indexItem, 1);
     tarefaArrayLista.push(objTarefa);
-    localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
+    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
 }
 
-function modalEdicaoTarefa(idTarefa) {
-    const inputValue = document.getElementById(idTarefa).innerHTML;
-    //let tarefaAlterada = prompt('Alterando tarefa', tarefaSelecionada);
+function modalEdicaoTarefa(taskId) {
+    const taskSelected = document.getElementById(taskId).innerHTML;
+    //let tarefaAlterada = prompt('Changing task', taskSelected);
 
     // Documentação do exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
     swal({
-        title: 'Alterando tarefa!',
+        title: 'Changing task!',
         content: "input",
         content: {
             element: "input",
             attributes: {
-                placeholder: "POr favor informe a tarefa",
-                value: inputValue,
+                placeholder: "Please inform the task",
+                value: taskSelected,
             },
         },
         closeModal: false,
@@ -188,16 +185,16 @@ function modalEdicaoTarefa(idTarefa) {
         height: 250,
     }).then((newValue) => {
         if (newValue) {
-            update(newValue, idTarefa)
+            update(newValue, taskId)
         } else {
-            swal('Observação!', 'Não teve alteração nessa tarefa.', "info");
+            swal('Observation!', 'This task has not changed.', "info");
         }
     });
 }
 
-function update(newValue, idTarefa) {
-    document.getElementById(idTarefa).innerHTML = newValue;
-    let indexItem = idTarefa.replace('tarefa_id_', '');
+function update(newValue, taskId) {
+    document.getElementById(taskId).innerHTML = newValue;
+    let indexItem = taskId.replace('tarefa_id_', '');
     let status = false;
     if (newValue != null) {
         for (var i = 0; i < tarefaArrayLista.length; i++) {
@@ -214,7 +211,7 @@ function update(newValue, idTarefa) {
         objTarefa.status = status;
         tarefaArrayLista.splice(indexItem, 1);
         tarefaArrayLista.push(objTarefa);
-        localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
+        localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
     }
 }
 
@@ -222,9 +219,9 @@ function deletarTarefa(rowId) {
     var row = document.createElement("tr");
     var row = document.getElementById(rowId);
     swal({
-        title: "Deseja realmente desejar essa tarefa?",
+        title: "Do you really want to delete this task?",
         icon: "info",
-        buttons: ["Cancelar", "Excluir"],
+        buttons: ["Cancel", "Delete"],
         dangerMode: true,
 
     }).then((willDelete) => {
@@ -232,8 +229,8 @@ function deletarTarefa(rowId) {
             const id = rowId.replace("row_id_", '')
             row.parentNode.removeChild(row);
             tarefaArrayLista.splice(id - 1, 1);
-            localStorage.setItem('listTarefas', JSON.stringify(tarefaArrayLista));
-            swal("Tarefa excluida com sucesso!", {
+            localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
+            swal("Task deleted successfully!", {
                 icon: "warning",
                 timer: 2000,
             });

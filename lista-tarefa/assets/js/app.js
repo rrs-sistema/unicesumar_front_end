@@ -11,11 +11,46 @@ class TarefaObj {
 }
 
 window.onload = function () {
-    const dadosLocalStorage = JSON.parse(localStorage.getItem('tasksList'));
-    dadosLocalStorage.forEach(item => {
-        criaNovaTarefa(item, false)
-    });
+    listarTarefa();
 };
+
+function listarTarefa() {
+
+    const parent = document.getElementById("table");
+    while (parent.firstChild) {
+        parent.firstChild.remove()
+    }
+
+    // Cria o cabeçalho da tabela
+    criaCabecalhoTable();
+
+    const dadosLocalStorage = JSON.parse(localStorage.getItem('tasksList'));
+    tarefaArrayLista = [];
+    let index = 0;
+    dadosLocalStorage.forEach(item => {
+        item.id = index;
+        tarefaArrayLista.push(item);
+        criarElemento(item);
+        index++;
+    });
+
+
+    var linhasTabela = document.getElementsByTagName("tr");
+
+    for (var i = 0; i < linhasTabela.length; i++) {
+        if (i == 0) {
+            continue;
+        }
+        else if ((i) % 2 == 0) {
+            linhasTabela[i].className = "styleOne";
+        }
+        else {
+            linhasTabela[i].className = "styleTwo";
+        }
+    }
+
+    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
+}
 
 function addTask() {
     const novaTarefa = document.getElementById('input_nova_tarefa').value;
@@ -36,69 +71,27 @@ function addTask() {
     criaNovaTarefa(objTarefa, true);
 };
 
-function criaNovaTarefa(objTar, vemCadastrado) {
+function criaNovaTarefa(objeto) {
     let temItem = false;
 
     for (var i = 0; i < tarefaArrayLista.length; i++) {
-        if (tarefaArrayLista[i].descricao.trim() == objTar.descricao.trim()) {
+        if (tarefaArrayLista[i].descricao.trim() == objeto.descricao.trim()) {
             temItem = true;
             break;
         }
     }
-    const table = document.getElementById("table");
-    let quantidade = table.children.length;
-    if (!temItem) {
-        let objTarefa = new TarefaObj();
-        objTarefa.id = quantidade;
-        objTarefa.descricao = objTar.descricao;
-        objTarefa.status = false;
-        tarefaArrayLista.push(objTarefa);
-    } else if (temItem && vemCadastrado) {
-        alert('OPS!, This task has already been registered.');
+
+    if (temItem) {
+        swal('Alert!', 'This task has already been registered.', "info");
         return;
     }
 
-    const novaTarefa = document.createElement('td');
-    novaTarefa.innerText = objTar.descricao;
-    const taskId = `tarefa_id_${quantidade}`;
-    novaTarefa.id = taskId;
-    novaTarefa.appendChild(criaInputCheckBoxTarefa(taskId));
-
-    // Create two new cells
-    var cellTextoTarefa = document.createElement("td");
-    cellTextoTarefa.id = taskId;
-    cellTextoTarefa.innerHTML = objTar.descricao;
-
-    var cellCheckBox = document.createElement("td");
-    var cellEditar = document.createElement("td");
-    var cellDeletar = document.createElement("td");
-    const rowId = `row_id_${quantidade}`;
-
-    cellCheckBox.appendChild(criaInputCheckBoxTarefa(taskId));
-    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${taskId}')`));
-    cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}')`));
-
-    var row = document.createElement("tr");
-    row.id = rowId;
-    row.appendChild(cellTextoTarefa);
-    row.appendChild(cellCheckBox);
-    row.appendChild(cellEditar);
-    row.appendChild(cellDeletar);
-
-    table.appendChild(row);// Adiciona a linha na tabela
-    const inputNovaTarefa = document.getElementById('input_nova_tarefa');
-    inputNovaTarefa.value = ''; // Limpa o input de tarefa
-    document.getElementById("input_nova_tarefa").focus(); // Seta o foco no input
-
-    const idInputChecked = `checkbox_${taskId}`;
-
-    if (!objTar.status) {
-        row.style = 'text-decoration: none;';
-        document.getElementById(idInputChecked).checked = false;
-    } else {
-        row.style = 'text-decoration: line-through;';
-        document.getElementById(idInputChecked).checked = true;
-    }
+    let objetoTarefa = new TarefaObj();
+    objetoTarefa.id = objeto.id - 1;
+    objetoTarefa.descricao = objeto.descricao;
+    objetoTarefa.status = false;
+    tarefaArrayLista.push(objetoTarefa);
+    criarElemento(objetoTarefa);
 
     var linhasTabela = document.getElementsByTagName("tr");
     for (var i = 0; i < linhasTabela.length; i++) {
@@ -114,6 +107,69 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
 }
 
+function criaCabecalhoTable() {
+
+    var row = document.createElement("tr");
+    row.style = 'background-color: cadetblue;';
+    var thTask = document.createElement("th");
+    thTask.innerHTML = 'Task';
+    thTask.style = 'width: 600px; text-align: left;';
+    row.append(thTask);
+
+    var thActions = document.createElement("th");
+    thActions.innerHTML = 'Actions';
+    thActions.style = 'text-align: center;';
+    thActions.colSpan = 3;
+    row.append(thActions);
+
+    const table = document.getElementById("table");
+    table.insertBefore(row, table.childNodes[0]);// Adiciona a linha na posição zero(0) tabela
+}
+
+function criarElemento(objetoTarefa) {
+    const novaTarefa = document.createElement('td');
+    novaTarefa.innerText = objetoTarefa.descricao;
+    const taskId = `tarefa_id_${objetoTarefa.id}`;
+    novaTarefa.id = taskId;
+    novaTarefa.appendChild(criaInputCheckBoxTarefa(taskId));
+
+    // Create two new cells
+    var cellTextoTarefa = document.createElement("td");
+    cellTextoTarefa.id = taskId;
+    cellTextoTarefa.innerHTML = objetoTarefa.descricao;
+
+    var cellCheckBox = document.createElement("td");
+    var cellEditar = document.createElement("td");
+    var cellDeletar = document.createElement("td");
+    const rowId = `row_id_${objetoTarefa.id}`;
+
+    cellCheckBox.appendChild(criaInputCheckBoxTarefa(taskId));
+    cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${taskId}')`));
+    cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}', '${taskId}')`));
+
+    var row = document.createElement("tr");
+    row.id = rowId;
+    row.appendChild(cellTextoTarefa);
+    row.appendChild(cellCheckBox);
+    row.appendChild(cellEditar);
+    row.appendChild(cellDeletar);
+    const table = document.getElementById("table");
+    table.appendChild(row);// Adiciona a linha na tabela
+    const inputNovaTarefa = document.getElementById('input_nova_tarefa');
+    inputNovaTarefa.value = ''; // Limpa o input de tarefa
+    document.getElementById("input_nova_tarefa").focus(); // Seta o foco no input
+
+    const idInputChecked = `checkbox_${taskId}`;
+
+    if (!objetoTarefa.status) {
+        row.style = 'text-decoration: none;';
+        document.getElementById(idInputChecked).checked = false;
+    } else {
+        row.style = 'text-decoration: line-through;';
+        document.getElementById(idInputChecked).checked = true;
+    }
+}
+
 function criaInputCheckBoxTarefa(taskId) {
     const inputTarefa = document.createElement('input');
     inputTarefa.id = `checkbox_${taskId}`;
@@ -124,7 +180,7 @@ function criaInputCheckBoxTarefa(taskId) {
 
 function criaButtonGeneric(nome, className, funcao) {
     var button = document.createElement('input');
-    button.id = "buttonEditar";
+    button.id = `button${nome}`;//"buttonEditar";
     button.type = "button";
     button.value = nome;
     button.className = `btn_generic ${className}`;
@@ -148,25 +204,24 @@ function mudaEstadoTarefa(taskId) {
             objTarefa.status = tarefaArrayLista[i].status;
         }
     }
-    let idRowSelected = taskId.replace('tarefa_id_', 'row_id_');
-    const rowSelected = document.getElementById(idRowSelected);
-
-    if (!objTarefa.status) {
-        rowSelected.style = 'text-decoration: none;';
-    } else {
-        rowSelected.style = 'text-decoration: line-through;';
-    }
-
     tarefaArrayLista.splice(indexItem, 1);
     tarefaArrayLista.push(objTarefa);
     localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
+    listarTarefa();
 }
 
 function modalEdicaoTarefa(taskId) {
     const taskSelected = document.getElementById(taskId).innerHTML;
     //let tarefaAlterada = prompt('Changing task', taskSelected);
-
     // Documentação do exemplo: https://sweetalert.js.org/guides/ AND https://sweetalert2.github.io/#examples
+
+    for (var i = 0; i < tarefaArrayLista.length; i++) {
+        if (tarefaArrayLista[i].descricao.trim() == taskSelected.trim() && tarefaArrayLista[i].status) {
+            swal('Attention!', 'This task has now been completed.', "warning");
+            return;
+        }
+    }
+
     swal({
         title: 'Changing task!',
         content: "input",
@@ -185,7 +240,7 @@ function modalEdicaoTarefa(taskId) {
         if (newValue) {
             update(newValue, taskId)
         } else {
-            swal('Observation!', 'This task has not changed.', "info");
+            swal('Attention!', 'This task has not changed.', "info");
         }
     });
 }
@@ -202,7 +257,6 @@ function update(newValue, taskId) {
                 break;
             }
         }
-        indexItem = (indexItem - 1);
         let objTarefa = new TarefaObj();
         objTarefa.id = indexItem;
         objTarefa.descricao = newValue;
@@ -213,21 +267,23 @@ function update(newValue, taskId) {
     }
 }
 
-function deletarTarefa(rowId) {
-    var row = document.createElement("tr");
+function deletarTarefa(rowId, idTask) {
     var row = document.getElementById(rowId);
+    const id = rowId.replace("row_id_", '');
+    var rowDescri = document.getElementById(idTask).innerHTML;
     swal({
-        title: "Do you really want to delete this task?",
+        title: `Do you really want to delete this task: "${rowDescri}"?`,
         icon: "info",
         buttons: ["Cancel", "Delete"],
         dangerMode: true,
 
     }).then((willDelete) => {
         if (willDelete) {
-            const id = rowId.replace("row_id_", '')
             row.parentNode.removeChild(row);
-            tarefaArrayLista.splice(id - 1, 1);
+            tarefaArrayLista.splice(id, 1);
             localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
+            row = document.getElementById(rowId);
+            listarTarefa();
             swal("Task deleted successfully!", {
                 icon: "warning",
                 timer: 2000,

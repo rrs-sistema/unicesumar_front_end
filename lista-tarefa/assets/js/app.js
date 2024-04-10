@@ -1,6 +1,7 @@
 const localStorage = window.localStorage;
 let tarefaArrayLista = localStorage.getItem('tasksList') ? JSON.parse(localStorage.getItem('tasksList')) : [];
 localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
+
 class TarefaObj {
     constructor(id, descricao, status) {
         this.id = id;
@@ -63,8 +64,6 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     novaTarefa.id = taskId;
     novaTarefa.appendChild(criaInputCheckBoxTarefa(taskId));
 
-    // Create a new row
-    var row = document.createElement("tr");
     // Create two new cells
     var cellTextoTarefa = document.createElement("td");
     cellTextoTarefa.id = taskId;
@@ -80,6 +79,8 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}')`));
 
     // Adiciona as celulas na linha atual
+    // Create a new row
+    var row = document.createElement("tr");
     row.id = rowId;
     row.appendChild(cellTextoTarefa);
     row.appendChild(cellCheckBox);
@@ -198,8 +199,8 @@ function update(newValue, taskId) {
     let status = false;
     if (newValue != null) {
         for (var i = 0; i < tarefaArrayLista.length; i++) {
-            status = tarefaArrayLista[i].status;
             if (tarefaArrayLista[i].descricao.trim() == newValue.trim()) {
+                status = tarefaArrayLista[i].status;
                 temItem = true;
                 break;
             }

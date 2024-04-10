@@ -78,8 +78,6 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     cellEditar.appendChild(criaButtonGeneric('Editar', 'btn_editar', `modalEdicaoTarefa('${taskId}')`));
     cellDeletar.appendChild(criaButtonGeneric('Deletar', 'btn_deletar', `deletarTarefa('${rowId}')`));
 
-    // Adiciona as celulas na linha atual
-    // Create a new row
     var row = document.createElement("tr");
     row.id = rowId;
     row.appendChild(cellTextoTarefa);
@@ -87,7 +85,6 @@ function criaNovaTarefa(objTar, vemCadastrado) {
     row.appendChild(cellEditar);
     row.appendChild(cellDeletar);
 
-    // Append the row to the table
     table.appendChild(row);// Adiciona a linha na tabela
     const inputNovaTarefa = document.getElementById('input_nova_tarefa');
     inputNovaTarefa.value = ''; // Limpa o input de tarefa

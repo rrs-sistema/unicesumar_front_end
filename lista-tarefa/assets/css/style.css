@@ -4,7 +4,7 @@
   align-items: center;
 }
 
-.child {
+.childBody {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -68,7 +68,6 @@
   background-color: #6b62f3;
 }
 
-
 .btn_deletar {
   background-color: #fd0505;
 }
@@ -92,7 +91,6 @@
 .styleTwo:hover {
   background-color: rgb(181, 198, 216);
 }
-
 
 div {
   border-radius: 5px;

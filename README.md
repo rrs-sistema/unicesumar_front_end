@@ -2,6 +2,8 @@
 
 Esta é uma aplicação simples de lista de tarefas desenvolvida utilizando HTML, CSS e JavaScript.
 
+<img src="/img/todo-list.png">
+
 ## Funcionalidades
 
 - Adicionar uma nova tarefa
@@ -28,5 +30,6 @@ Para remover uma tarefa, clique no botão de remoção (ícone de lixeira) ao la
 
 Contribuindo
 Sinta-se à vontade para contribuir com melhorias neste projeto. Abra um pull request com suas alterações.
+
 
 

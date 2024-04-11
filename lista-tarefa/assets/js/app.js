@@ -52,63 +52,7 @@ function listarTarefa() {
     localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
 }
 
-function addTask() {
-    const novaTarefa = document.getElementById('input_nova_tarefa').value;
-    if (novaTarefa == null || novaTarefa == '') {
-        swal('OPS!, Enter the task description.', {
-            button: {
-                text: "OK",
-            },
-        });
-        return;
-    }
-    const table = document.getElementById("table");
-    let quantidade = table.children.length;
-    let objTarefa = new TarefaObj();
-    objTarefa.id = quantidade;
-    objTarefa.descricao = novaTarefa;
-    objTarefa.status = false;
-    criaNovaTarefa(objTarefa, true);
-};
-
-function criaNovaTarefa(objeto) {
-    let temItem = false;
-
-    for (var i = 0; i < tarefaArrayLista.length; i++) {
-        if (tarefaArrayLista[i].descricao.trim() == objeto.descricao.trim()) {
-            temItem = true;
-            break;
-        }
-    }
-
-    if (temItem) {
-        swal('Alert!', 'This task has already been registered.', "info");
-        return;
-    }
-
-    let objetoTarefa = new TarefaObj();
-    objetoTarefa.id = objeto.id - 1;
-    objetoTarefa.descricao = objeto.descricao;
-    objetoTarefa.status = false;
-    tarefaArrayLista.push(objetoTarefa);
-    criarElemento(objetoTarefa);
-
-    var linhasTabela = document.getElementsByTagName("tr");
-    for (var i = 0; i < linhasTabela.length; i++) {
-        if (i == 0) continue;// Não pinta o cabeçalho da tabela
-        if ((i) % 2 == 0) {
-            linhasTabela[i].className = "styleOne";
-        }
-        else {
-            linhasTabela[i].className = "styleTwo";
-        }
-    }
-
-    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
-}
-
 function criaCabecalhoTable() {
-
     var row = document.createElement("tr");
     row.style = 'background-color: cadetblue;';
     var thTask = document.createElement("th");
@@ -127,11 +71,7 @@ function criaCabecalhoTable() {
 }
 
 function criarElemento(objetoTarefa) {
-    const novaTarefa = document.createElement('td');
-    novaTarefa.innerText = objetoTarefa.descricao;
     const taskId = `tarefa_id_${objetoTarefa.id}`;
-    novaTarefa.id = taskId;
-    novaTarefa.appendChild(criaInputCheckBoxTarefa(taskId));
 
     // Create two new cells
     var cellTextoTarefa = document.createElement("td");
@@ -186,6 +126,61 @@ function criaButtonGeneric(nome, className, funcao) {
     button.className = `btn_generic ${className}`;
     button.setAttribute('onclick', funcao);
     return button;
+}
+
+function addTask() {
+    const novaTarefa = document.getElementById('input_nova_tarefa').value;
+    if (novaTarefa == null || novaTarefa == '') {
+        swal('OPS!, Enter the task description.', {
+            button: {
+                text: "OK",
+            },
+        });
+        return;
+    }
+    const table = document.getElementById("table");
+    let quantidade = table.children.length;
+    let objTarefa = new TarefaObj();
+    objTarefa.id = quantidade;
+    objTarefa.descricao = novaTarefa;
+    objTarefa.status = false;
+    criaNovaTarefa(objTarefa, true);
+};
+
+function criaNovaTarefa(objeto) {
+    let temItem = false;
+
+    for (var i = 0; i < tarefaArrayLista.length; i++) {
+        if (tarefaArrayLista[i].descricao.trim() == objeto.descricao.trim()) {
+            temItem = true;
+            break;
+        }
+    }
+
+    if (temItem) {
+        swal('Alert!', 'This task has already been registered.', "info");
+        return;
+    }
+
+    let objetoTarefa = new TarefaObj();
+    objetoTarefa.id = objeto.id - 1;
+    objetoTarefa.descricao = objeto.descricao;
+    objetoTarefa.status = false;
+    tarefaArrayLista.push(objetoTarefa);
+    criarElemento(objetoTarefa);
+
+    var linhasTabela = document.getElementsByTagName("tr");
+    for (var i = 0; i < linhasTabela.length; i++) {
+        if (i == 0) continue;// Não pinta o cabeçalho da tabela
+        if ((i) % 2 == 0) {
+            linhasTabela[i].className = "styleOne";
+        }
+        else {
+            linhasTabela[i].className = "styleTwo";
+        }
+    }
+
+    localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista))
 }
 
 function mudaEstadoTarefa(taskId) {
@@ -282,7 +277,6 @@ function deletarTarefa(rowId, idTask) {
             row.parentNode.removeChild(row);
             tarefaArrayLista.splice(id, 1);
             localStorage.setItem('tasksList', JSON.stringify(tarefaArrayLista));
-            row = document.getElementById(rowId);
             listarTarefa();
             swal("Task deleted successfully!", {
                 icon: "warning",

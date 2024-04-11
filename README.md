@@ -17,7 +17,7 @@ Esta é uma aplicação simples de lista de tarefas desenvolvida utilizando HTML
 ```bash/cmd ```
 git clone https://github.com/rrs-sistema/unicesumar_front_end.git
 
-Veja aqui o video explicativo do projeto no Youtube: https://www.youtube.com/watch?v=jJFDhKoqN68
+Veja aqui o video explicativo do projeto no Youtube: https://www.youtube.com/watch?v=tPvGLDZeeWw
 
 
 Abra o arquivo index.html no seu navegador web.
